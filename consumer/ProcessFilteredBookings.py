@@ -24,6 +24,7 @@ def lambda_handler(event, context):
         WaitTimeSeconds=2       # Use long polling
     )
 
+
     messages = response.get('Messages', [])
     print("Total messages received in the batch : ",len(messages))
     print("messages : ",messages)
