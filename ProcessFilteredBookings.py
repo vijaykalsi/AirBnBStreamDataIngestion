@@ -36,7 +36,7 @@ def lambda_handler(event, context):
         # Process message
         print("Processing message: ", message['Body'])
         bookings_data = bookings_data.update(json.loads(message['Body']))
-
+        print(bookings_data)
         # Delete message from the queue
         receipt_handle = message['ReceiptHandle']
         sqs.delete_message(
