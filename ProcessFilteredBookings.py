@@ -28,7 +28,7 @@ def lambda_handler(event, context):
     messages = response.get('Messages', [])
     print("Total messages received in the batch : ",len(messages))
     print("messages : ",messages)
-    s3object = s3_client.Object(tgtbucket, tgtkey)
+    
       
     #response = s3_client.put_object(Body=filetoupload.getvalue(), Bucket=tgtbucket, Key=tgtkey, )
     bookings_data={}
@@ -45,8 +45,11 @@ def lambda_handler(event, context):
         )
         print("Message deleted from the queue")
     #wrtting the msg to file
-    s3object.put(
-        Body=(bytes(json.dumps(bookings_data).encode('UTF-8')))
+       
+    s3_client.put_object(
+        Bucket=tgtbucket,
+        Body=(json.dumps(bookings_data)),
+        Key=tgtkey
     )     
     print("Ending SQS Batch Process")
 
