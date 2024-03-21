@@ -5,7 +5,7 @@ from datetime import date, timedelta, datetime
 import random
 
 sqs_client = boto3.client('sqs')
-QUEUE_URL = 'https://sqs.us-east-1.amazonaws.com/851725469799/aws-de-sqs'  # replace with your SQS Queue URL
+QUEUE_URL = 'https://sqs.us-east-1.amazonaws.com/905418247818/AirbnbBookingQueue'  # replace with your SQS Queue URL
 
 def rand_dates(max_days=5, year=None):
     

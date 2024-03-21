@@ -6,14 +6,14 @@ import json
 def lambda_handler(event, context):
     print("Starting SQS Batch Process")
     # Specify your SQS queue URL
-    queue_url = 'https://sqs.us-east-1.amazonaws.com/851725469799/aws-de-sqs'
+    queue_url = 'https://sqs.us-east-1.amazonaws.com/905418247818/AirbnbBookingQueue'
 
     # Create SQS client
     sqs = boto3.client('sqs')
 
     #target s3
     fdt = datetime.now().strftime("%Y%m%d%H%M%S")
-    tgtbucket='doordash-target-zn-vj'
+    tgtbucket='airbnb-booking-records-vj'
     tgtkey='processed_filtered_bookings' + fdt + '.json'
     s3_client = boto3.client('s3')
 
