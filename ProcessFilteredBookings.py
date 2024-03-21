@@ -20,8 +20,8 @@ def lambda_handler(event, context):
     # Receive messages from the SQS queue
     response = sqs.receive_message(
         QueueUrl=queue_url,
-        MaxNumberOfMessages=10,  # Adjust based on your preference
-        WaitTimeSeconds=2       # Use long polling
+        MaxNumberOfMessages=5,  # Adjust based on your preference
+        WaitTimeSeconds=5       # Use long polling
     )
 
 
