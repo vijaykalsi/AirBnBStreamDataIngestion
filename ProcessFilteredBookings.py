@@ -10,33 +10,38 @@ def lambda_handler(event, context):
 
     # Create SQS client
     sqs = boto3.client('sqs')
-
+    bookings_data={}
     #target s3
     fdt = datetime.now().strftime("%Y%m%d%H%M%S")
     tgtbucket='airbnb-booking-records-vj'
-    tgtkey='processed_filtered_bookings' + fdt + '.json'
+    tgtkey='processed_filtered_bookings.json' #+ fdt + '.json'
     s3_client = boto3.client('s3')
 
     # Receive messages from the SQS queue
     response = sqs.receive_message(
         QueueUrl=queue_url,
-        MaxNumberOfMessages=5,  # Adjust based on your preference
-        WaitTimeSeconds=5       # Use long polling
+        MaxNumberOfMessages=10,  # Adjust based on your preference
+        WaitTimeSeconds=5      # Use long polling
     )
-
 
     messages = response.get('Messages', [])
     print("Total messages received in the batch : ",len(messages))
-    print("messages : ",messages)
+    ##print("messages : ",messages)
     
       
     #response = s3_client.put_object(Body=filetoupload.getvalue(), Bucket=tgtbucket, Key=tgtkey, )
-    bookings_data={}
+    
     for message in messages:
         # Process message
         print("Processing message: ", message['Body'])
-        bookings_data = bookings_data.update(json.loads(message['Body']))
-        print(bookings_data)
+        bookings_data = json.loads(message['Body'])
+        print("booking data: ", bookings_data)
+        if(bookings_data):
+            s3_client.put_object(
+                Bucket=tgtbucket,
+                Body=json.dumps(bookings_data),
+             Key=tgtkey
+            ) 
         # Delete message from the queue
         receipt_handle = message['ReceiptHandle']
         sqs.delete_message(
@@ -45,12 +50,8 @@ def lambda_handler(event, context):
         )
         print("Message deleted from the queue")
     #wrtting the msg to file
-       
-    s3_client.put_object(
-        Bucket=tgtbucket,
-        Body=(json.dumps(bookings_data)),
-        Key=tgtkey
-    )     
+    
+        
     print("Ending SQS Batch Process")
 
     return {
