@@ -30,24 +30,30 @@ def lambda_handler(event, context):
     
       
     #response = s3_client.put_object(Body=filetoupload.getvalue(), Bucket=tgtbucket, Key=tgtkey, )
-    
+    bookings_data =[]
     for message in messages:
         # Process message
         print("Processing message: ", message['Body'])
-        bookings_data = json.loads(message['Body'])
-        print("booking data: ", bookings_data)
-        if(bookings_data):
-            s3_client.put_object(
-                Bucket=tgtbucket,
-                Body=json.dumps(bookings_data),
-             Key=tgtkey
-            ) 
+        if message['Body']:
+            bookings_data.append(json.loads(message['Body']))
+            print(f"bookings_data1: '{bookings_data}'")
+            #bookings_data = json.loads(message['Body'])
+                      
         # Delete message from the queue
+            
         receipt_handle = message['ReceiptHandle']
         sqs.delete_message(
             QueueUrl=queue_url,
             ReceiptHandle=receipt_handle
         )
+        print("Message deleted from the queue")
+        #print("booking data: ", bookings_data)
+        if bookings_data:
+            s3_client.put_object(
+                Bucket=tgtbucket,
+                Body=json.dumps(bookings_data),
+             Key=tgtkey
+            ) 
         print("Message deleted from the queue")
     #wrtting the msg to file
     
